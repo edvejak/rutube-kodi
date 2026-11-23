@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.rutube" name="Rutube" version="2.17.0" provider-name="community">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="main.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Watch Rutube videos in Kodi</summary>
+    <summary lang="ru_RU">Просмотр видео Rutube в Kodi</summary>
+    <description lang="en_GB">Search and play videos from Rutube.ru. Unofficial addon, uses Rutube's public web API.</description>
+    <description lang="ru_RU">Поиск и просмотр видео с Rutube.ru. Неофициальный аддон, использует публичное веб-API Rutube.</description>
+    <platform>all</platform>
+    <license>MIT</license>
+    <source>https://rutube.ru</source>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
+  </extension>
+</addon>

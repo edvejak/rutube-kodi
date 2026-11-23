@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <setting id="quality_mode"
+             type="enum"
+             values="Всегда максимальное (1080p)|Спросить перед просмотром|Автоматически (ABR)|Не выше 720p|Не выше 480p"
+             default="0"
+             label="Выбор качества видео"/>
+    <setting id="direct_variant" type="bool" default="false"
+             label="Выбирать качество в плагине и отдавать плееру прямую ссылку (для GstPlayer и внешних плееров)"/>
+    <setting id="save_history" type="bool" default="true"
+             label="Сохранять историю просмотра и поиска (только на этом устройстве)"/>
+    <setting id="download_dir"
+             type="folder"
+             option="writeable"
+             default=""
+             label="Папка для загрузок (пункт «Скачать видео» в контекстном меню)"/>
+    <setting id="hide_shorts" type="bool" default="false" label="Скрывать Shorts (короткие вертикальные видео)"/>
+    <setting id="age_limit" type="enum" default="0"
+             values="Не ограничивать|Скрывать 18+|Скрывать 16+ и старше|Скрывать 12+ и старше"
+             label="Родительский фильтр"/>
+    <setting id="library_dir" type="folder" option="writeable" default=""
+             label="Папка для экспорта сериалов в медиатеку Kodi"/>
+    <setting id="library_meta" type="enum" default="0"
+             values="Данные Rutube (.nfo)|Скрейпер Kodi (TMDb) — только .strm"
+             label="Метаданные экспортированных сериалов"/>
+</settings>
