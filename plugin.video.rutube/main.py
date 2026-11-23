@@ -57,15 +57,7 @@ SEARCH_AUTHORS_API = "https://rutube.ru/api/v3/search/authors"
 PERSON_API = "https://rutube.ru/api/video/person/{author_id}/"
 PLAYLIST_USER_API = "https://rutube.ru/api/playlist/user/{author_id}/"
 PLAYLIST_VIDEOS_API = "https://rutube.ru/api/playlist/custom/{playlist_id}/videos/"
-# Просмотр ПО ВСЕМУ Rutube в рамках одной категории (не только один канал) —
-# подсмотрено в старом плагине: там у каждого видео в контекстном меню есть
-# переход "Каталог: <категория>", который даёт намного больше контента, чем
-# каталог одного канала.
 CATEGORY_API = "https://rutube.ru/api/video/category/{category_id}/"
-# "Витрина" Rutube — та же лента готовых подборок, что и на главной странице
-# сайта ("Топ сериалов", тематические карусели и т.д.). Найдено в старом
-# стороннем аддоне: именно отсюда там гораздо более богатый и организованный
-# список сериалов, а не из каталога одного канала.
 FEED_MAIN_URL = "https://rutube.ru/pangolin/api/web/feed/new_main_page/?limit=100&sort=series_d"
 PLAY_OPTIONS_API = "https://rutube.ru/api/play/options/{video_id}/"
 
