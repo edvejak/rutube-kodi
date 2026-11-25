@@ -1,47 +1,39 @@
-
-name: Build Kodi install ZIP
-
-on:
-  push:
-    tags:
-      - "v*"
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out source
-        uses: actions/checkout@v4
-
-      - name: Validate add-on version
-        if: startsWith(github.ref, 'refs/tags/')
-        shell: bash
+      - name: Build and validate Kodi install ZIP
+        shell: python
         run: |
-          ADDON_VERSION="$(python3 -c "import xml.etree.ElementTree as ET; print(ET.parse('plugin.video.rutube/addon.xml').getroot().attrib['version'])")"
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
-          if [ "$ADDON_VERSION" != "$TAG_VERSION" ]; then
-            echo "Tag version ($TAG_VERSION) does not match addon.xml ($ADDON_VERSION)"
-            exit 1
-          fi
+          from pathlib import Path
+          from zipfile import ZIP_DEFLATED, ZipFile
 
-      - name: Build Kodi install ZIP
-        run: |
-          zip -r plugin.video.rutube.zip plugin.video.rutube
+          addon_dir = Path("plugin.video.rutube")
+          archive = Path("plugin.video.rutube.zip")
 
-      - name: Upload ZIP as workflow artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: plugin.video.rutube
-          path: plugin.video.rutube.zip
-          if-no-files-found: error
+          if not (addon_dir / "addon.xml").is_file():
+              raise SystemExit("Missing addon.xml")
 
-      - name: Publish GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: plugin.video.rutube.zip
-          generate_release_notes: true
+          # Добавляем только файлы, без записей каталогов.
+          with ZipFile(archive, "w", compression=ZIP_DEFLATED) as zf:
+              for path in sorted(addon_dir.rglob("*")):
+                  if path.is_file():
+                      zf.write(path, path.as_posix())
+
+          # Проверяем целостность и структуру.
+          with ZipFile(archive, "r") as zf:
+              bad = zf.testzip()
+              if bad is not None:
+                  raise SystemExit(f"ZIP integrity error: {bad}")
+
+              names = zf.namelist()
+
+              if not names:
+                  raise SystemExit("Empty ZIP")
+
+              if any(name.endswith("/") for name in names):
+                  raise SystemExit("Directory entries are not allowed")
+
+              if any(not name.startswith("plugin.video.rutube/") for name in names):
+                  raise SystemExit("Unexpected path in ZIP")
+
+              if "plugin.video.rutube/addon.xml" not in names:
+                  raise SystemExit("Missing addon.xml")
+
+          print(f"ZIP verified: {len(names)} files")
