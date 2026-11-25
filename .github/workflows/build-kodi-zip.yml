@@ -1,3 +1,32 @@
+name: Build Kodi install ZIP
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Validate add-on version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          ADDON_VERSION="$(python3 -c "import xml.etree.ElementTree as ET; print(ET.parse('plugin.video.rutube/addon.xml').getroot().attrib['version'])")"
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$ADDON_VERSION" != "$TAG_VERSION" ]; then
+            echo "Tag version ($TAG_VERSION) does not match addon.xml ($ADDON_VERSION)"
+            exit 1
+          fi
+
       - name: Build and validate Kodi install ZIP
         shell: python
         run: |
@@ -16,7 +45,7 @@
                   if path.is_file():
                       zf.write(path, path.as_posix())
 
-          # Проверяем целостность и структуру.
+          # Проверяем целостность и структуру архива.
           with ZipFile(archive, "r") as zf:
               bad = zf.testzip()
               if bad is not None:
@@ -37,3 +66,17 @@
                   raise SystemExit("Missing addon.xml")
 
           print(f"ZIP verified: {len(names)} files")
+
+      - name: Upload ZIP as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin.video.rutube
+          path: plugin.video.rutube.zip
+          if-no-files-found: error
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: plugin.video.rutube.zip
+          generate_release_notes: true
