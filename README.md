@@ -1,5 +1,6 @@
 # rutube-kodi
-Unofficial Rutube video addon for Kodi
+Unofficial Rutube video addon for Kodi. 
+Установка: готовый плагин на странице релизов. Из исходников: zip -r plugin.video.rutube.zip plugin.video.rutube
 
 Плагин для просмотра видео на сайте Rutube на Коди 20+.
 Тестируется на Ubuntu 26.04 и Kodi 21.3.
